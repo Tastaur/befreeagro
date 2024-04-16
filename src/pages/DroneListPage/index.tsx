@@ -9,9 +9,8 @@ import { AddNewDroneDialog } from '../../components/AddNewDroneDialog';
 
 
 export const DroneListPage = () => {
-  const { isLoading, data, parsedData } = useDroneListData();
+  const { isLoading, data, addNewItem } = useDroneListData();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [list, setList] = useState(parsedData);
 
   return (
     <Stack
@@ -21,7 +20,7 @@ export const DroneListPage = () => {
     >
       <DroneListWrapper
       >
-        {isLoading ? <Preloader /> : [...list, ...(data?.data ?? [])].map(i => <DroneCard
+        {isLoading ? <Preloader /> : data.map(i => <DroneCard
           {...i}
           key={i.drone_code} />)}
       </DroneListWrapper>
@@ -32,7 +31,7 @@ export const DroneListPage = () => {
       </Stack>
       {isAddDialogOpen ? <AddNewDroneDialog
         onClose={() => setIsAddDialogOpen(false)}
-        onAddNew={item => setList(prev => [...prev, item])} /> : null}
+        onAddNew={addNewItem} /> : null}
     </Stack>
   );
 };
