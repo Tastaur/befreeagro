@@ -1,0 +1,132 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint/eslint-plugin",
+    "react-hooks",
+    "react",
+    "jsx-a11y",
+    "import"
+  ],
+  "extends": ["airbnb-typescript"],
+  "ignorePatterns": [
+    "*.svg",
+    "/*.js",
+    "build/**",
+    "dist/**",
+    "coverage",
+    "azure",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ],
+  "env": {
+    "browser": true,
+    "jest": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "./tsconfig.json"
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.test.ts",
+        "src/**/*.*"
+      ]
+    }
+  ],
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "off",
+    "object-curly-spacing": [
+      "error",
+      "always",
+      {
+        "objectsInObjects": true
+      }
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "ignorePattern": "import \\{?\\s?.*\\s?\\}? from '.*';",
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
+    "curly": [
+      "error",
+      "all"
+    ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "react-redux",
+            "importNames": ["useSelector"],
+            "message": "Please import 'useSelector' from 'store/hooks'"
+          },
+          {
+            "name": "@mui/styles",
+            "message": "Please use '@mui/material' imports"
+          },
+          {
+            "name": "@mui/system",
+            "message": "Please use '@mui/material' imports"
+          }
+        ]
+      }
+    ],
+    "indent": "off",
+    "@typescript-eslint/no-unused-expressions": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_"
+      }
+    ],
+    "@typescript-eslint/indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "import/no-extraneous-dependencies": "off",
+    "react/jsx-curly-brace-presence": 2,
+    "semi": "off",
+    "@typescript-eslint/semi": ["error"],
+    "react/jsx-tag-spacing": 2,
+    "react/jsx-indent" : ["error", 2],
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "import/first": "error",
+    "import/newline-after-import": ["error", { "count": 2 }],
+    "no-negated-condition": "error",
+    "prefer-template": "error",
+    "yoda": ["error", "always", { "onlyEquality": true }],
+    "import/order": ["error", {
+      "groups": [["builtin", "external"], ["internal"], ["index", "sibling", "parent"]],
+      "newlines-between": "always"
+    }],
+    "import/no-named-as-default": "off",
+    "react/jsx-max-props-per-line": [
+      2,
+      {
+        "maximum": { "single": 2, "multi": 1 }
+      }
+    ],
+    "react/jsx-first-prop-new-line": [
+      2,
+      "multiline"
+    ]
+  }
+}
