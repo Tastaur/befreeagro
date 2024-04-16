@@ -1,5 +1,3 @@
-import { AxiosResponse } from 'axios';
-
 import { IMAGE_STORAGE_KEY, STORAGE_KEY } from '../../globalConstants';
 import { DroneCardEntity } from '../../api/drones/types';
 
@@ -14,12 +12,3 @@ export const getDroneImageFromLocalStorage = (id: string) => {
   return ((userData ? JSON.parse(userData) : {}) as Record<string, string>)[id];
 };
 
-export const convertDataToAxiosResponse = <T extends any>(data: T): AxiosResponse<T> => {
-  return  {
-    data,
-    headers: {},
-    status: 200,
-    request: null,
-    statusText: '',
-  } as AxiosResponse<T>;
-};
