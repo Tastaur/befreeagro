@@ -23,8 +23,11 @@ export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNe
   const onSubmit = (data: DroneForm) => {
     const { file: _file, ...drone } = data;
     gotPhoto(data);
-    addToLocalStorage(drone);
-    onAddNew(drone);
+    const preparedDrone = {
+      ...drone, release_date: new Date(drone.release_date).toISOString(),
+    };
+    addToLocalStorage(preparedDrone);
+    onAddNew(preparedDrone);
     onClose();
   };
   return (
