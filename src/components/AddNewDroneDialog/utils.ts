@@ -15,11 +15,13 @@ export const addImageToLocalStorage = (id: string, file: string) => {
   localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify({ ...prepared, [id]: file }));
 };
 
-export function gotPhoto(data: DroneForm) {
-  const file = data.file[0];
-  const reader = new FileReader();
-  reader.onload = function () {
-    addImageToLocalStorage(data.drone_code, reader.result as string);
-  };
-  reader.readAsDataURL(file);
-}
+export const uploadPhoto = (data: DroneForm) => {
+  if (data.file) {
+    const file = data.file[0];
+    const reader = new FileReader();
+    reader.onload = function () {
+      addImageToLocalStorage(data.drone_code, reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  }
+};

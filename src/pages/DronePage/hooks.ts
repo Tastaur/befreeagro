@@ -1,10 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 
-import { QUERY_KEYS } from '../../globalConstants';
-import { requestGetDroneById, requestGetDroneImageById } from '../../api/drones';
-import { getDroneImageFromLocalStorage, getDronesFromLocalStorage } from '../DroneListPage/utils';
+import { DroneCameraItem, DroneCardEntity } from '../../api/drones/types';
+import { useQueryDroneDataById } from '../../requestHook/drone/useQueryDroneDataById';
+import { useQueryDronePictureById } from '../../requestHook/drone/useQueryDronePictureById';
 
 
 export const useDronePageData = () => {
@@ -13,43 +12,33 @@ export const useDronePageData = () => {
   const onError = () => {
     navigate('/');
   };
+  const { data: drone, isLoading: isDataLoading, error } = useQueryDroneDataById(id, onError);
+  const { data: dronePicture, isLoading: isPictureLoading } = useQueryDronePictureById(id);
 
-  const { data: drone, isLoading: isDataLoading, error } = useQuery({
-    queryKey: [QUERY_KEYS.drone, id],
-    queryFn: async () => requestGetDroneById(id ?? '').catch(() => {
-      const parsedData = getDronesFromLocalStorage();
-      const currentDrone = parsedData.find(d => d.drone_code === id);
-      if (currentDrone) {
-        return currentDrone;
-      }
-      onError();
-    }),
-  });
-  const { data: dronePicture } = useQuery({
-    queryKey: [QUERY_KEYS.drone, id, 'image'],
-    queryFn: async () => requestGetDroneImageById(id ?? '').catch(() => {
-      return getDroneImageFromLocalStorage(id ?? '');
-    }),
-  });
-
-  const droneData = useMemo(() => {
-    return drone && 'data' in drone ? drone?.data : drone;
-  }, [drone]);
-
-  const imageData = useMemo(() => {
-    return dronePicture && typeof dronePicture !== 'string' && 'data' in dronePicture &&
-        dronePicture?.data ? URL.createObjectURL(dronePicture.data) : dronePicture as string;
-  }, [dronePicture]);
 
   if (error) {
     onError();
   }
 
+  const droneFields = useMemo(() => {
+    return (
+      drone ? Object.keys(drone).filter(i => i !== 'cameras') : []
+    ) as Array<keyof DroneCardEntity>;
+  }, [drone]);
+
+  const cameraFields = useMemo(() => {
+    return (
+      drone?.cameras && drone.cameras[0] ? Object.keys(drone.cameras[0]) : []
+    ) as Array<keyof DroneCameraItem>;
+  }, [drone?.cameras]);
+
   return {
-    error,
-    drone: droneData,
+    drone,
+    droneFields,
+    cameraFields,
     isDataLoading,
-    dronePicture: imageData, 
+    dronePicture,
+    isPictureLoading,
   };
 
 };

@@ -1,4 +1,6 @@
-import { DroneCardEntity, DroneItem } from '../../api/drones/types';
+import { HTMLInputTypeAttribute } from 'react';
+
+import { DroneCameraItem, DroneCardEntity, DroneItem } from '../../api/drones/types';
 
 
 export interface AddNewDroneDialogProps {
@@ -8,5 +10,16 @@ export interface AddNewDroneDialogProps {
 }
 
 export interface DroneForm extends DroneCardEntity {
-  file: FileList
+  file?: FileList
+}
+
+export interface FormField {
+  name: keyof DroneForm;
+  label: string;
+  type: HTMLInputTypeAttribute
+}
+
+export interface CameraFields extends Omit<FormField, 'name'> {
+  name: keyof DroneCameraItem,
+  items?: string[]
 }

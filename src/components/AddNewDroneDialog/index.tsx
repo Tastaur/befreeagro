@@ -1,13 +1,14 @@
 import { FC } from 'react';
-import { Button, Dialog, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Button, Dialog, MenuItem, Stack } from '@mui/material';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { AddNewDroneDialogProps, DroneForm } from './types';
 import { CAMERA_TYPE } from '../../api/drones/types';
 import { StyledForm } from './styles';
-import { addToLocalStorage, gotPhoto } from './utils';
-import { createScheme, defaultValues } from './constants';
+import { addToLocalStorage, uploadPhoto } from './utils';
+import { CAMERA_FIELDS, createScheme, defaultValues, MAIN_FIELDS } from './constants';
+import { StyledTextField } from '../StyledTextField';
 
 
 export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNew, existedEntity }) => {
@@ -22,7 +23,7 @@ export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNe
   });
   const onSubmit = (data: DroneForm) => {
     const { file: _file, ...drone } = data;
-    gotPhoto(data);
+    uploadPhoto(data);
     const preparedDrone = {
       ...drone, release_date: new Date(drone.release_date).toISOString(),
     };
@@ -34,63 +35,43 @@ export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNe
     <Dialog open onClose={onClose}>
       <Stack padding={4}>
         <StyledForm onSubmit={handleSubmit(onSubmit)}>
-          <Controller
-            control={control}
-            name='drone_code'
-            render={({ field }) => <TextField {...field} label="Drone code" />}
-          />
-          <TextField
+          <StyledTextField
             type="file"
+            helperText={errors.file?.message}
             {...register('file')}
           />
-          <Controller
+          {MAIN_FIELDS.map(i => <Controller
+            key={`drone_${i.name}`}
             control={control}
-            name='name'
-            render={({ field }) => <TextField {...field} label="Name" />}
-          />
-          <Controller
-            control={control}
-            name='range'
-            render={({ field }) => <TextField
+            name={i.name}
+            render={({ field }) => <StyledTextField
               {...field}
-              type="number"
-              label="Range" />}
-          />
-          <Controller
-            control={control}
-            name='release_date'
-            render={({ field }) => <TextField
-              {...field}
-              type="date"
-              label="Date release" />}
-          />
+              helperText={errors[i.name]?.message}
+              type={i.type}
+              label={i.label} />}
+          />)}
           {fields.map((item, index) => (
             <Stack key={item.id} gap={2}>
-              <Controller
-                render={({ field }) => <TextField {...field} label="Name" />}
-                name={`cameras.${index}.name`}
+              {CAMERA_FIELDS.map(i => i.items ? <Controller
+                key={`cameras.${index}.${i.name}`}
+                name={`cameras.${index}.${i.name}`}
                 control={control}
-              />
-              <Controller
-                render={({ field }) => <TextField
-                  {...field}
-                  type="number"
-                  label="Megapixels" />}
-                name={`cameras.${index}.megapixels`}
-                control={control}
-              />
-              <Controller
-                name={`cameras.${index}.type`}
-                control={control}
-                render={({ field }) => <TextField
+                render={({ field }) => <StyledTextField
                   select
                   {...field}
-                  label="Types">
-                  {Object.values(CAMERA_TYPE).map(i => <MenuItem value={i} key={i}>{i}</MenuItem>)}
-                </TextField>}
+                  label={i.label}>
+                  {i.items?.map(menuItem => <MenuItem
+                    value={menuItem}
+                    key={menuItem}>{menuItem}</MenuItem>)}
+                </StyledTextField>}
 
-              />
-              <Button type="button" onClick={() => remove(index)}>Delete camera</Button>
+              /> : <Controller
+                render={({ field }) => <StyledTextField {...field} label={i.label} />}
+                key={`cameras.${index}.${i.name}`}
+                name={`cameras.${index}.${i.name}`}
+                control={control}
+              />)}
+              <Button onClick={() => remove(index)}>Delete camera</Button>
             </Stack>
           ))}
           <Button
@@ -99,7 +80,6 @@ export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNe
           >
             Add camera
           </Button>
-          {Object.keys(errors).length ? <Typography color="error">Form is not valid</Typography> : null}
           <Button type="submit">Submit</Button>
         </StyledForm>
       </Stack>

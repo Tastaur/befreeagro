@@ -8,36 +8,46 @@ import { TIME_FORMAT } from '../../globalConstants';
 import { BackButton, DroneDataWrapper, StyledPicture } from './styles';
 import noImage from '../../assets/noImage.jpg';
 import { Preloader } from '../../components/Preloader';
+import { convertSnakeCaseToCapitalize } from './utils';
 
 
 export const DronePage = () => {
-  const { drone, dronePicture, isDataLoading } = useDronePageData();
+  const {
+    drone,
+    dronePicture,
+    isDataLoading,
+    isPictureLoading,
+    droneFields,
+    cameraFields,
+  } = useDronePageData();
 
-  return isDataLoading ? <Preloader /> : (
+  return isDataLoading || !drone ? <Preloader /> : (
     <Stack
       overflow="hidden"
       position="relative"
       flexDirection="row"
       height="100%"
     >
-      <StyledPicture src={dronePicture ? dronePicture : noImage} alt="dronePicture" />
+      <Stack width="50%">
+        {isPictureLoading ? <Preloader /> : <StyledPicture src={dronePicture ? dronePicture : noImage} alt="dronePicture" /> }
+      </Stack>
       <DroneDataWrapper gap={2} padding={3}>
         <Stack gap={2}>
-          <Typography>Name: {drone?.name}</Typography>
-          <Typography>Drone code: {drone?.drone_code}</Typography>
-          <Typography>Range: {drone?.range}</Typography>
-          <Typography>Data release: {
-            format(new Date(drone?.release_date ?? new Date()), TIME_FORMAT.DAY_MONTH_YEAR)
-          }</Typography>
+          {droneFields.map(i => <Typography key={i}>
+            {convertSnakeCaseToCapitalize(i)}: {'release_date' === i
+              ? format(new Date(drone[i] ?? new Date()), TIME_FORMAT.DAY_MONTH_YEAR)
+              : String(drone[i])}
+          </Typography>,
+          )}
         </Stack>
-        <Stack gap={2}>
+        {drone.cameras.length ? <Stack gap={2}>
           <Typography>Cameras:</Typography>
-          {drone?.cameras.map(c => <Stack gap={1}>
-            <Typography>Name: {c.name}</Typography>
-            <Typography>Megapixels: {c.megapixels}</Typography>
-            <Typography>Camera Type: {c.type}</Typography>
+          {drone?.cameras.map(c => <Stack gap={1} key={c.name}>
+            {cameraFields.map(i => <Typography key={`${i}_${c.name}`}>
+              {convertSnakeCaseToCapitalize(i)}: {c[i]}
+            </Typography>)}
           </Stack>)}
-        </Stack>
+        </Stack> : null}
       </DroneDataWrapper>
       <Link to="/">
         <BackButton>
