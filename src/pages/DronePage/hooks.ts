@@ -35,7 +35,7 @@ export const useDronePageData = () => {
 
   const imageData = useMemo(() => {
     return dronePicture && typeof dronePicture !== 'string' && 'data' in dronePicture &&
-        dronePicture?.data ? URL.createObjectURL(dronePicture.data) : dronePicture;
+        dronePicture?.data ? URL.createObjectURL(dronePicture.data) : dronePicture as string;
   }, [dronePicture]);
 
   return {
