@@ -81,7 +81,7 @@ export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNe
                 </TextField>}
 
               />
-              <Button type="button" onClick={() => remove(index)}>Delete</Button>
+              <Button type="button" onClick={() => remove(index)}>Delete camera</Button>
             </Stack>
           ))}
           <Button
