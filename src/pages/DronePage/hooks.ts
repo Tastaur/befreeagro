@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useMemo } from 'react';
 
 import { QUERY_KEYS } from '../../globalConstants';
 import { requestGetDroneById, requestGetDroneImageById } from '../../api/drones';
-import { getDronesFromLocalStorage } from '../DroneListPage/utils';
+import { getDroneImageFromLocalStorage, getDronesFromLocalStorage } from '../DroneListPage/utils';
 
 
 export const useDronePageData = () => {
@@ -23,15 +24,25 @@ export const useDronePageData = () => {
   });
   const { data: dronePicture } = useQuery({
     queryKey: [QUERY_KEYS.drone, id, 'image'],
-    queryFn: async () => requestGetDroneImageById(id ?? ''),
+    queryFn: async () => requestGetDroneImageById(id ?? '').catch(() => {
+      return getDroneImageFromLocalStorage(id ?? '');
+    }),
   });
 
+  const droneData = useMemo(() => {
+    return drone && 'data' in drone ? drone?.data : drone;
+  }, [drone]);
+
+  const imageData = useMemo(() => {
+    return dronePicture && typeof dronePicture !== 'string' && 'data' in dronePicture &&
+        dronePicture?.data ? URL.createObjectURL(dronePicture.data) : dronePicture;
+  }, [dronePicture]);
 
   return {
     error,
-    drone: drone && 'data' in drone ? drone?.data : drone,
+    drone: droneData,
     isDataLoading,
-    dronePicture: dronePicture?.data ? URL.createObjectURL(dronePicture.data) : '',
+    dronePicture: imageData, 
   };
 
 };

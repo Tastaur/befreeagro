@@ -3,26 +3,28 @@ import { Button, Dialog, MenuItem, Stack, TextField, Typography } from '@mui/mat
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { AddNewDroneDialogProps } from './types';
-import { CAMERA_TYPE, DroneCardEntity } from '../../api/drones/types';
+import { AddNewDroneDialogProps, DroneForm } from './types';
+import { CAMERA_TYPE } from '../../api/drones/types';
 import { StyledForm } from './styles';
-import { addToLocalStorage } from './utils';
-import { defaultValues, schema } from './constants';
+import { addToLocalStorage, gotPhoto } from './utils';
+import { createScheme, defaultValues } from './constants';
 
 
-export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNew }) => {
-  const { control, handleSubmit, formState: { errors } } = useForm<DroneCardEntity>({
+export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNew, existedEntity }) => {
+  const { control, handleSubmit, register, formState: { errors } } = useForm<DroneForm>({
     defaultValues,
     // @ts-ignore
-    resolver: yupResolver(schema),
+    resolver: yupResolver(createScheme(existedEntity)),
   });
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'cameras',
   });
-  const onSubmit = (data: DroneCardEntity) => {
-    addToLocalStorage(data);
-    onAddNew(data);
+  const onSubmit = (data: DroneForm) => {
+    const { file: _file, ...drone } = data;
+    gotPhoto(data);
+    addToLocalStorage(drone);
+    onAddNew(drone);
     onClose();
   };
   return (
@@ -33,6 +35,10 @@ export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNe
             control={control}
             name='drone_code'
             render={({ field }) => <TextField {...field} label="Drone code" />}
+          />
+          <TextField
+            type="file"
+            {...register('file')}
           />
           <Controller
             control={control}

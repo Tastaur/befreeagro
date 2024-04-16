@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import * as yup from 'yup';
 
-import { DroneCardEntity } from '../../api/drones/types';
+import { DroneCardEntity, DroneItem } from '../../api/drones/types';
 import { TIME_FORMAT } from '../../globalConstants';
 
 
@@ -12,9 +12,12 @@ export const defaultValues: DroneCardEntity = {
   name: '',
   cameras: [],
 };
-export const schema = yup
+export const  createScheme = (existedItem: DroneItem[]) =>  yup
   .object<yup.AnyObjectSchema>({
-  drone_code: yup.string().required(),
+  drone_code: yup.string().required().test('Unique name', value => {
+    return !existedItem.some(i => i.drone_code === value);
+  }),
+  file: yup.mixed().required(),
   name: yup.string().required(),
   range: yup.number().required(),
   release_date: yup.string().required(),
