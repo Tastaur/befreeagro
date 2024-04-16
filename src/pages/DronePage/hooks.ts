@@ -10,7 +10,7 @@ export const useDronePageData = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: drone, isLoading: isDataLoading } = useQuery({
+  const { data: drone, isLoading: isDataLoading, error } = useQuery({
     queryKey: [QUERY_KEYS.drone, id],
     queryFn: async () => requestGetDroneById(id ?? '').catch(() => {
       const data = localStorage.getItem(STORAGE_KEY);
@@ -22,15 +22,16 @@ export const useDronePageData = () => {
       navigate('/');
     }),
   });
-  const { data: dronePicture, isLoading: isImageLoading } = useQuery({
+  const { data: dronePicture } = useQuery({
     queryKey: [QUERY_KEYS.drone, id, 'image'],
     queryFn: async () => requestGetDroneImageById(id ?? ''),
   });
 
 
   return {
+    error,
     drone: drone && 'data' in drone ? drone?.data : drone,
-    isLoading: isImageLoading || isDataLoading,
+    isDataLoading,
     dronePicture: dronePicture?.data ? URL.createObjectURL(dronePicture.data) : '',
   };
 

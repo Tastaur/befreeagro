@@ -7,16 +7,17 @@ import { useDronePageData } from './hooks';
 import { TIME_FORMAT } from '../../globalConstants';
 import { BackButton, DroneDataWrapper, StyledPicture } from './styles';
 import noImage from '../../assets/noImage.jpg';
+import { Preloader } from '../../components/Preloader';
 
 
 export const DronePage = () => {
-  const { drone, dronePicture, isLoading } = useDronePageData();
+  const { drone, dronePicture, isDataLoading, error } = useDronePageData();
   const navigate = useNavigate();
 
-  if (!drone && !isLoading) {
+  if (error) {
     navigate('/');
   }
-  return (
+  return isDataLoading ? <Preloader /> : (
     <Stack
       overflow="hidden"
       position="relative"
