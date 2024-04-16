@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { QUERY_KEYS } from '../../globalConstants';
 import { requestGetDrones } from '../../api/drones';
@@ -13,9 +13,12 @@ export const useDroneListData = () => {
   const addNewItem = (entity: DroneCardEntity) => {
     setList(prev => [...prev, entity]);
   };
+  const preparedData = useMemo(() => {
+    return [...(data?.data ?? []), ...list];
+  }, [data?.data, list]);
   return {
     addNewItem,
-    data: [...(data?.data ?? []), ...list],
+    data: preparedData,
     isLoading,
   };
 };
