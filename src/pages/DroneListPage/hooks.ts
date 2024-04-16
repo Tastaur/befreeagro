@@ -10,8 +10,8 @@ import { DroneCardEntity } from '../../api/drones/types';
 export const useDroneListData = () => {
   const { data, isLoading } = useQuery({ queryKey: [QUERY_KEYS], queryFn: requestGetDrones });
   const [list, setList] = useState(getDronesFromLocalStorage());
-  const addNewItem = (data: DroneCardEntity) => {
-    setList(prev => [...prev, data]);
+  const addNewItem = (entity: DroneCardEntity) => {
+    setList(prev => [...prev, entity]);
   };
   return {
     addNewItem,

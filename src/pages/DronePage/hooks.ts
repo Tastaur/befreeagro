@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { QUERY_KEYS, STORAGE_KEY } from '../../globalConstants';
+import { QUERY_KEYS } from '../../globalConstants';
 import { requestGetDroneById, requestGetDroneImageById } from '../../api/drones';
-import { DroneCardEntity } from '../../api/drones/types';
+import { getDronesFromLocalStorage } from '../DroneListPage/utils';
 
 
 export const useDronePageData = () => {
@@ -13,8 +13,7 @@ export const useDronePageData = () => {
   const { data: drone, isLoading: isDataLoading, error } = useQuery({
     queryKey: [QUERY_KEYS.drone, id],
     queryFn: async () => requestGetDroneById(id ?? '').catch(() => {
-      const data = localStorage.getItem(STORAGE_KEY);
-      const parsedData = (data ? JSON.parse(data) : []) as DroneCardEntity[];
+      const parsedData = getDronesFromLocalStorage();
       const currentDrone = parsedData.find(d => d.drone_code === id);
       if (currentDrone) {
         return currentDrone;
