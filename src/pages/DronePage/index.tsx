@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
 import { ChevronLeft } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
 import { useDronePageData } from './hooks';
@@ -11,12 +11,8 @@ import { Preloader } from '../../components/Preloader';
 
 
 export const DronePage = () => {
-  const { drone, dronePicture, isDataLoading, error } = useDronePageData();
-  const navigate = useNavigate();
+  const { drone, dronePicture, isDataLoading } = useDronePageData();
 
-  if (error) {
-    navigate('/');
-  }
   return isDataLoading ? <Preloader /> : (
     <Stack
       overflow="hidden"

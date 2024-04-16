@@ -10,6 +10,9 @@ import { getDroneImageFromLocalStorage, getDronesFromLocalStorage } from '../Dro
 export const useDronePageData = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const onError = () => {
+    navigate('/');
+  };
 
   const { data: drone, isLoading: isDataLoading, error } = useQuery({
     queryKey: [QUERY_KEYS.drone, id],
@@ -19,7 +22,7 @@ export const useDronePageData = () => {
       if (currentDrone) {
         return currentDrone;
       }
-      navigate('/');
+      onError();
     }),
   });
   const { data: dronePicture } = useQuery({
@@ -37,6 +40,10 @@ export const useDronePageData = () => {
     return dronePicture && typeof dronePicture !== 'string' && 'data' in dronePicture &&
         dronePicture?.data ? URL.createObjectURL(dronePicture.data) : dronePicture as string;
   }, [dronePicture]);
+
+  if (error) {
+    onError();
+  }
 
   return {
     error,
