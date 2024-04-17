@@ -11,14 +11,17 @@ export const defaultValues: DroneForm = {
   release_date: format(new Date(), TIME_FORMAT.DASHED_YEAR),
   range: 0,
   name: '',
-  cameras: [],
+  cameras: [{ type: CAMERA_TYPE.color, name: '', megapixels: 0 }],
 };
 export const  createScheme = (existedItem: DroneItem[]) =>  yup
   .object<yup.AnyObjectSchema>({
   drone_code: yup.string().required().test('Unique name', value => {
     return !existedItem.some(i => i.drone_code === value);
   }),
-  file: yup.mixed().required(),
+  file: yup.mixed()
+    .test('required', 'You need to provide a file', (file) => {
+      return Boolean((file as FileList).length);
+    }),
   name: yup.string().required(),
   range: yup.number().required(),
   release_date: yup.string().required(),

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Button, Dialog, MenuItem, Stack } from '@mui/material';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Controller, FieldError, useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { AddNewDroneDialogProps, DroneForm } from './types';
@@ -58,6 +58,7 @@ export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNe
                 control={control}
                 render={({ field }) => <StyledTextField
                   select
+                  helperText={(errors?.cameras?.[index]?.[i.name] as unknown as FieldError)?.message}
                   {...field}
                   label={i.label}>
                   {i.items?.map(menuItem => <MenuItem
@@ -66,12 +67,17 @@ export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNe
                 </StyledTextField>}
 
               /> : <Controller
-                render={({ field }) => <StyledTextField {...field} label={i.label} />}
+                render={({ field }) => <StyledTextField
+                  helperText={(errors?.cameras?.[index]?.[i.name] as unknown as FieldError)?.message}
+                  {...field}
+                  label={i.label}
+                />}
                 key={`cameras.${index}.${i.name}`}
                 name={`cameras.${index}.${i.name}`}
+
                 control={control}
               />)}
-              <Button onClick={() => remove(index)}>Delete camera</Button>
+              {fields.length < 2 ? null : <Button onClick={() => remove(index)}>Delete camera</Button>}
             </Stack>
           ))}
           <Button
