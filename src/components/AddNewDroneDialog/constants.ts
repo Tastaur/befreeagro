@@ -22,9 +22,15 @@ export const  createScheme = (existedItem: DroneItem[]) =>  yup
   name: yup.string().required(),
   range: yup.number().required(),
   release_date: yup.string().required(),
-  cameras: yup.array(),
+  cameras: yup.array().required().min(1).of(yup.object().shape({
+    name: yup.string().required(),
+    megapixels: yup.number().min(0),
+    type: yup.mixed<CAMERA_TYPE>().oneOf(Object.values(CAMERA_TYPE)),
+  })),
 })
   .required();
+
+
 export const MAIN_FIELDS: FormField[] = [{
   name: 'drone_code',
   label: 'Drone Code',
