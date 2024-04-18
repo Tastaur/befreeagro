@@ -11,3 +11,4 @@ export const TIME_FORMAT = {
 };
 
 export const STORAGE_KEY = 'storage_agro';
+export const IMAGE_STORAGE_KEY = 'image_storage_agro';

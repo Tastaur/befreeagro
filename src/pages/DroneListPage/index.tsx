@@ -30,6 +30,7 @@ export const DroneListPage = () => {
         </Button>
       </Stack>
       {isAddDialogOpen ? <AddNewDroneDialog
+        existedEntity={data}
         onClose={() => setIsAddDialogOpen(false)}
         onAddNew={addNewItem} /> : null}
     </Stack>

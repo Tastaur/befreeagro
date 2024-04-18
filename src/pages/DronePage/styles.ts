@@ -3,7 +3,6 @@ import { IconButton, Stack } from '@mui/material';
 
 
 export const StyledPicture = styled('img')({
-  maxWidth: '50%',
   height: '100%',
 });
 export const DroneDataWrapper = styled(Stack)({
