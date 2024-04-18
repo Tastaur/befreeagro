@@ -11,7 +11,7 @@ export const getDroneImageFromLocalStorage = (id: string) => {
   return userData[id];
 };
 
-const getValueFromLocalStorage = <T extends any>(id: string, safetyData: T) => {
+export const getValueFromLocalStorage = <T extends any>(id: string, safetyData: T) => {
   const data = localStorage.getItem(id);
   return (data ? JSON.parse(data) : safetyData) as T;
 };

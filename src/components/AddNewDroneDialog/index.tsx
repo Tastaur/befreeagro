@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { AddNewDroneDialogProps, DroneForm } from './types';
 import { CAMERA_TYPE } from '../../api/drones/types';
 import { StyledForm } from './styles';
-import { addToLocalStorage, uploadPhoto } from './utils';
+import { addDroneToLocalStorage, uploadPhoto } from './utils';
 import { CAMERA_FIELDS, createScheme, defaultValues, MAIN_FIELDS } from './constants';
 import { StyledTextField } from '../StyledTextField';
 
@@ -27,7 +27,7 @@ export const AddNewDroneDialog: FC<AddNewDroneDialogProps> = ({ onClose, onAddNe
     const preparedDrone = {
       ...drone, release_date: new Date(drone.release_date).toISOString(),
     };
-    addToLocalStorage(preparedDrone);
+    addDroneToLocalStorage(preparedDrone);
     onAddNew(preparedDrone);
     onClose();
   };
